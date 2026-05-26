@@ -13,6 +13,20 @@ import {
   Cross,
   PlusCircle,
   ArrowLeft,
+  Moon,
+  UtensilsCrossed,
+  Dumbbell,
+  Users,
+  Smartphone,
+  Hourglass,
+  Briefcase,
+  BookOpen,
+  CalendarClock,
+  ClipboardList,
+  Lock,
+  Utensils,
+  BatteryFull,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,7 +59,8 @@ const BASE_TASKS = [
     pressure: 3,
     type: "health",
     fixed: true,
-    description: "少於 6 小時會讓隔天效率下降。",
+    icon: Moon,
+    description: "少於 7 小時體力會不足。",
   },
   {
     id: "meals",
@@ -56,7 +71,8 @@ const BASE_TASKS = [
     pressure: 2,
     type: "health",
     fixed: true,
-    description: "基本生活維持。",
+    icon: UtensilsCrossed,
+    description: "基本生活維持，沒吃會餓昏。",
   },
   {
     id: "prayer",
@@ -67,38 +83,8 @@ const BASE_TASKS = [
     pressure: 1,
     type: "faith",
     repeatable: true,
-    description: "安靜親近神，重新校準一天的方向。",
-  },
-  {
-    id: "service",
-    name: "服事 / 關懷",
-    hours: 1,
-    energy: 1,
-    importance: 4,
-    pressure: 1,
-    type: "faith",
-    repeatable: true,
-    description: "把時間用在愛神與愛人的行動上。",
-  },
-  {
-    id: "report",
-    name: "準備明天報告",
-    hours: 3,
-    energy: 3,
-    importance: 5,
-    pressure: 5,
-    type: "important",
-    description: "重要且有期限。",
-  },
-  {
-    id: "assignment",
-    name: "英文作業 / 專案推進",
-    hours: 2,
-    energy: 2,
-    importance: 4,
-    pressure: 4,
-    type: "important",
-    description: "不做會累積壓力。",
+    icon: Cross,
+    description: "安靜親近神，可包含個人禱告、讀經、服事關懷。",
   },
   {
     id: "exercise",
@@ -108,6 +94,7 @@ const BASE_TASKS = [
     importance: 3,
     pressure: 1,
     type: "health",
+    icon: Dumbbell,
     description: "花時間但提升健康度。",
   },
   {
@@ -118,28 +105,20 @@ const BASE_TASKS = [
     importance: 3,
     pressure: 1,
     type: "relationship",
+    icon: Users,
     description: "維持關係與情緒支持。",
   },
   {
-    id: "phone",
-    name: "滑手機",
+    id: "entertainment",
+    name: "娛樂消遣",
     hours: 1,
     energy: 0,
     importance: 1,
     pressure: 0,
     type: "temptation",
     repeatable: true,
-    description: "快樂 +1，但容易越滑越久。",
-  },
-  {
-    id: "gaming",
-    name: "打遊戲 / 追劇",
-    hours: 2,
-    energy: 1,
-    importance: 1,
-    pressure: 0,
-    type: "temptation",
-    description: "快樂 +3，但會佔掉大段時間。",
+    icon: Smartphone,
+    description: "滑手機、追劇、打遊戲都算。爽快 +1，但很容易停不下來。",
   },
   {
     id: "buffer",
@@ -150,6 +129,7 @@ const BASE_TASKS = [
     pressure: 0,
     type: "buffer",
     repeatable: true,
+    icon: Hourglass,
     description: "面對突發事件的保險。",
   },
 ];
@@ -164,6 +144,7 @@ const ROLE_TASKS = {
       importance: 2,
       pressure: 2,
       type: "relationship",
+      icon: Users,
       description: "開心但也會消耗時間。",
     },
     {
@@ -174,6 +155,7 @@ const ROLE_TASKS = {
       importance: 5,
       pressure: 5,
       type: "important",
+      icon: BookOpen,
       description: "明天就要考。",
     },
   ],
@@ -187,6 +169,7 @@ const ROLE_TASKS = {
       pressure: 3,
       type: "fixed",
       fixed: true,
+      icon: CalendarClock,
       description: "很難取消的固定行程。",
     },
     {
@@ -197,6 +180,7 @@ const ROLE_TASKS = {
       importance: 5,
       pressure: 5,
       type: "important",
+      icon: Briefcase,
       description: "今天必須推進。",
     },
   ],
@@ -209,6 +193,7 @@ const ROLE_TASKS = {
       importance: 5,
       pressure: 5,
       type: "important",
+      icon: Briefcase,
       description: "最有壓力的交付。",
     },
     {
@@ -219,6 +204,7 @@ const ROLE_TASKS = {
       importance: 2,
       pressure: 2,
       type: "routine",
+      icon: ClipboardList,
       description: "不急但容易堆積。",
     },
   ],
@@ -349,6 +335,43 @@ function getPersonality(scores) {
   };
 }
 
+const REQUIREMENT_DEFS = [
+  { id: "fullness", label: "飽食", icon: Utensils, hint: "排「吃飯與整理」就能達標。" },
+  { id: "rest", label: "體力", icon: BatteryFull, hint: "至少 7 小時睡眠才會滿。" },
+  {
+    id: "progress",
+    label: "進度",
+    icon: Briefcase,
+    hint: "安排今日重要任務（角色限定那張）4 小時即可滿。",
+  },
+];
+
+function getContributions(task) {
+  const out = [];
+  if (task.id === "meals") out.push({ key: "fullness", amount: 100 });
+  if (task.id === "sleep") {
+    out.push({ key: "rest", amount: Math.min(100, Math.round((task.hours / 7) * 100)) });
+  }
+  if (task.importance >= 4 && task.type === "important") {
+    out.push({ key: "progress", amount: Math.min(100, task.hours * 25) });
+  }
+  return out;
+}
+
+function computeRequirements(schedule) {
+  const sleepHours = schedule.filter((s) => s.id === "sleep").reduce((sum, s) => sum + s.hours, 0);
+  const hasMeals = schedule.some((s) => s.id === "meals");
+  const importantHours = schedule
+    .filter((s) => s.importance >= 4 && s.type === "important")
+    .reduce((sum, s) => sum + s.hours, 0);
+
+  return {
+    fullness: hasMeals ? 100 : 0,
+    rest: Math.min(100, Math.round((sleepHours / 7) * 100)),
+    progress: Math.min(100, Math.round((importantHours / 4) * 100)),
+  };
+}
+
 function ScoreBar({ label, value, icon: Icon }) {
   return (
     <div className="space-y-1">
@@ -361,6 +384,32 @@ function ScoreBar({ label, value, icon: Icon }) {
       <div className="h-2 rounded-full bg-slate-100">
         <motion.div
           className="h-2 rounded-full bg-slate-800"
+          initial={{ width: 0 }}
+          animate={{ width: `${clamp(value)}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function RequirementMeter({ def, value }) {
+  const met = value >= 100;
+  const Icon = def.icon;
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-xs">
+        <span className="flex items-center gap-1.5 font-medium text-slate-700">
+          <Icon className="h-3.5 w-3.5" /> {def.label}
+        </span>
+        <span
+          className={`flex items-center gap-1 tabular-nums ${met ? "text-emerald-600" : "text-slate-400"}`}
+        >
+          {value}/100 {met && <CheckCircle2 className="h-3 w-3" />}
+        </span>
+      </div>
+      <div className="h-1.5 rounded-full bg-slate-100">
+        <motion.div
+          className={`h-1.5 rounded-full ${met ? "bg-emerald-500" : "bg-amber-400"}`}
           initial={{ width: 0 }}
           animate={{ width: `${clamp(value)}%` }}
         />
@@ -392,6 +441,17 @@ export default function TimePlannerGame({ onBack }) {
   );
   const usedHours = schedule.reduce((sum, item) => sum + item.hours, 0);
   const freeHours = 24 - usedHours;
+  const requirements = useMemo(() => computeRequirements(schedule), [schedule]);
+  const allRequirementsMet = REQUIREMENT_DEFS.every((d) => requirements[d.id] >= 100);
+  const unmetLabels = REQUIREMENT_DEFS.filter((d) => requirements[d.id] < 100).map((d) => d.label);
+  // 把對門檻有貢獻的卡排到最上面（讓玩家先看到「必須選」的卡）
+  const sortedTasks = useMemo(() => {
+    return [...tasks].sort((a, b) => {
+      const ac = getContributions(a).length;
+      const bc = getContributions(b).length;
+      return bc - ac;
+    });
+  }, [tasks]);
 
   const taskCounts = schedule.reduce((acc, item) => {
     acc[item.id] = (acc[item.id] || 0) + 1;
@@ -726,32 +786,64 @@ export default function TimePlannerGame({ onBack }) {
                   <CalendarDays className="h-5 w-5" /> 2. 加入任務卡
                 </h2>
                 <div className="space-y-2">
-                  {tasks.map((task) => {
+                  {sortedTasks.map((task) => {
                     const disabled =
                       (!task.repeatable && taskCounts[task.id]) || freeHours < task.hours;
+                    const contribs = getContributions(task);
+                    const TaskIcon = task.icon;
                     return (
                       <button
                         key={task.id}
                         disabled={disabled}
                         onClick={() => addTask(task)}
-                        className={`w-full rounded-2xl border p-3 text-left transition ${disabled ? "cursor-not-allowed opacity-40" : "bg-white hover:-translate-y-0.5 hover:shadow-sm"}`}
+                        className={`w-full rounded-2xl border p-3 text-left transition ${
+                          disabled
+                            ? "cursor-not-allowed opacity-40"
+                            : contribs.length > 0
+                              ? "border-amber-200 bg-amber-50/40 hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-sm"
+                              : "bg-white hover:-translate-y-0.5 hover:shadow-sm"
+                        }`}
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <div className="font-semibold">{task.name}</div>
-                            <div className="mt-1 text-xs text-slate-500">{task.description}</div>
+                          <div className="flex items-start gap-3">
+                            {TaskIcon && (
+                              <div
+                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+                                  contribs.length > 0
+                                    ? "bg-amber-100 text-amber-700"
+                                    : "bg-slate-100 text-slate-600"
+                                }`}
+                              >
+                                <TaskIcon className="h-4 w-4" />
+                              </div>
+                            )}
+                            <div>
+                              <div className="font-semibold">{task.name}</div>
+                              <div className="mt-1 text-xs text-slate-500">{task.description}</div>
+                            </div>
                           </div>
                           <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
                             {task.hours}h
                           </span>
                         </div>
-                        <div className="mt-2 flex items-center gap-2">
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
                           <span
                             className={`rounded-full border px-2 py-0.5 text-xs ${TYPE_STYLE[task.type] || TYPE_STYLE.routine}`}
                           >
                             {TYPE_LABEL[task.type] || "任務"}
                           </span>
-                          <span className="text-xs text-slate-400">
+                          {contribs.map((c) => {
+                            const def = REQUIREMENT_DEFS.find((d) => d.id === c.key);
+                            return (
+                              <span
+                                key={c.key}
+                                className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700"
+                              >
+                                +{c.amount} {def?.label}
+                              </span>
+                            );
+                          })}
+                          <span className="ml-auto text-xs text-slate-400">
                             重要 {task.importance} / 壓力 {task.pressure}
                           </span>
                         </div>
@@ -827,19 +919,40 @@ export default function TimePlannerGame({ onBack }) {
           <div className="space-y-4">
             <Card className="rounded-3xl border-0 shadow-sm">
               <CardContent className="space-y-4 p-5">
-                <h2 className="flex items-center gap-2 text-lg font-bold">
-                  <AlertTriangle className="h-5 w-5" /> 4. 抽突發事件
-                </h2>
-                <p className="text-sm text-slate-500">
-                  安排完成後抽 3 張事件卡，測試你的排程、信仰時間與生活次序是否穩定。
-                </p>
+                <div>
+                  <h2 className="flex items-center gap-2 text-lg font-bold">
+                    <Lock className="h-5 w-5" /> 必達門檻
+                  </h2>
+                  <p className="mt-1 text-xs text-slate-500">
+                    三項都滿才能抽事件。沒吃飯、沒睡飽、沒做重要任務都會卡住。
+                  </p>
+                </div>
+                <div className="space-y-3 rounded-2xl bg-slate-50 p-3">
+                  {REQUIREMENT_DEFS.map((def) => (
+                    <RequirementMeter key={def.id} def={def} value={requirements[def.id]} />
+                  ))}
+                </div>
+
+                <div className="border-t pt-4">
+                  <h2 className="flex items-center gap-2 text-lg font-bold">
+                    <AlertTriangle className="h-5 w-5" /> 4. 抽突發事件
+                  </h2>
+                  <p className="mt-1 text-sm text-slate-500">
+                    安排完成後抽 3 張事件卡，測試你的排程、信仰時間與生活次序是否穩定。
+                  </p>
+                </div>
                 <Button
                   onClick={drawEvents}
-                  disabled={schedule.length === 0}
+                  disabled={schedule.length === 0 || !allRequirementsMet}
                   className="w-full rounded-2xl"
                 >
                   <Zap className="mr-2 h-4 w-4" /> 抽事件並計算結果
                 </Button>
+                {!allRequirementsMet && schedule.length > 0 && (
+                  <div className="rounded-2xl bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    還缺：{unmetLabels.join("、")}。先把基本生活排進去再抽。
+                  </div>
+                )}
                 <div className="space-y-2">
                   {eventCards.length === 0 ? (
                     <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-400">
