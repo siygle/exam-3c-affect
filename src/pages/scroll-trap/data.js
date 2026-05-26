@@ -116,37 +116,129 @@ export const LOGIC_QUESTIONS = [
   },
 ];
 
+// image 形狀：
+//   { kind: 'photo', seed: '<deterministic seed>' } → 透過 Picsum 載入真實照片
+//   { kind: 'emoji', value: '🐶💕' }                → 顯示 emoji + 漸層底
+//   未提供                                          → 純文字貼文
+const photo = (seed) => ({ kind: "photo", seed });
+const emoji = (value) => ({ kind: "emoji", value });
+
 const POST_TEMPLATES = [
-  { avatar: "🐶", name: "阿光", text: "我家狗狗今天又翻肚討摸了，誰能抵抗", image: "🐶💕" },
-  { avatar: "🐱", name: "雅琪", text: "貓主子又把我的耳機線咬斷了第三次⋯", image: "🐱🎧" },
-  { avatar: "🍣", name: "小宇", text: "新開的壽司吃到飽真的太狂", image: "🍣🍱🍤" },
-  { avatar: "🐰", name: "靖雯", text: "兔兔吃菜的樣子好療癒", image: "🐰🥬" },
-  { avatar: "✨", name: "Joy", text: "今天的夕陽美到不行，附近的人快來看", image: "🌅" },
-  { avatar: "☕", name: "Daniel", text: "新買的手沖咖啡器材抵達，週末來開箱" },
+  {
+    avatar: "🐶",
+    name: "阿光",
+    text: "我家狗狗今天又翻肚討摸了，誰能抵抗",
+    image: photo("puppy-belly-rub"),
+  },
+  { avatar: "🐱", name: "雅琪", text: "貓主子又把我的耳機線咬斷了第三次⋯", image: emoji("🐱🎧") },
+  { avatar: "🍣", name: "小宇", text: "新開的壽司吃到飽真的太狂", image: photo("sushi-bar-night") },
+  { avatar: "🐰", name: "靖雯", text: "兔兔吃菜的樣子好療癒", image: emoji("🐰🥬") },
+  {
+    avatar: "✨",
+    name: "Joy",
+    text: "今天的夕陽美到不行，附近的人快來看",
+    image: photo("sunset-rooftop"),
+  },
+  {
+    avatar: "☕",
+    name: "Daniel",
+    text: "新買的手沖咖啡器材抵達，週末來開箱",
+    image: photo("pourover-kit"),
+  },
   { avatar: "🎤", name: "Hannah", text: "下週敬拜團練習有新詩歌，要練到爆 💪" },
-  { avatar: "🐼", name: "阿凱", text: "熊貓滾來滾去看一百次都不會膩", image: "🐼🎋" },
-  { avatar: "📚", name: "小芸", text: "進度落後，今晚決定不睡了" },
-  { avatar: "🌮", name: "Mike", text: "墨西哥捲餅是宇宙級美食，沒有之一", image: "🌮🔥" },
+  { avatar: "🐼", name: "阿凱", text: "熊貓滾來滾去看一百次都不會膩", image: emoji("🐼🎋") },
+  { avatar: "📚", name: "小芸", text: "進度落後，今晚決定不睡了", image: photo("study-desk-lamp") },
+  {
+    avatar: "🌮",
+    name: "Mike",
+    text: "墨西哥捲餅是宇宙級美食，沒有之一",
+    image: photo("taco-board"),
+  },
   { avatar: "🐧", name: "Iris", text: "企鵝走路的影片可以治癒一切" },
-  { avatar: "🎮", name: "阿哲", text: "新買的遊戲玩到天亮，明天怎麼辦" },
-  { avatar: "🍵", name: "Sara", text: "找到一家超讚的茶館，下次來組團" },
+  {
+    avatar: "🎮",
+    name: "阿哲",
+    text: "新買的遊戲玩到天亮，明天怎麼辦",
+    image: photo("neon-arcade"),
+  },
+  {
+    avatar: "🍵",
+    name: "Sara",
+    text: "找到一家超讚的茶館，下次來組團",
+    image: photo("matcha-house"),
+  },
   { avatar: "💭", name: "Ellie", text: "突然想到，禱告好久沒有真的安靜了" },
-  { avatar: "🐢", name: "阿傑", text: "烏龜界的時尚 icon，請欣賞", image: "🐢🕶️" },
-  { avatar: "📸", name: "小璇", text: "新買的相機第一張照片，給我滿分嗎？", image: "📸🌸" },
-  { avatar: "🍰", name: "Maggie", text: "戚風蛋糕第七次失敗，但我不會放棄" },
-  { avatar: "🐦", name: "Yuki", text: "陽台來了小鳥築巢，請大家安靜不要嚇牠", image: "🐦🏠" },
-  { avatar: "🏃", name: "凱文", text: "晨跑打卡 day 47，膝蓋有點抗議" },
-  { avatar: "🎬", name: "Vivian", text: "重看了一部老電影，眼淚還是停不下來" },
-  { avatar: "🍜", name: "阿樺", text: "深夜泡麵宣告今天結束" },
-  { avatar: "🦊", name: "Tony", text: "看到一個迷因笑了半小時，沒救", image: "🦊😂" },
-  { avatar: "🌈", name: "Joanna", text: "下完雨的彩虹，神的恩典從不遲到", image: "🌈" },
-  { avatar: "🐠", name: "阿德", text: "新買的水族箱開缸成功，魚開始游了" },
-  { avatar: "🎨", name: "Stella", text: "今天畫了一張小卡送給朋友，被誇到不要不要" },
+  { avatar: "🐢", name: "阿傑", text: "烏龜界的時尚 icon，請欣賞", image: emoji("🐢🕶️") },
+  {
+    avatar: "📸",
+    name: "小璇",
+    text: "新買的相機第一張照片，給我滿分嗎？",
+    image: photo("first-frame-bloom"),
+  },
+  {
+    avatar: "🍰",
+    name: "Maggie",
+    text: "戚風蛋糕第七次失敗，但我不會放棄",
+    image: photo("chiffon-attempt-7"),
+  },
+  {
+    avatar: "🐦",
+    name: "Yuki",
+    text: "陽台來了小鳥築巢，請大家安靜不要嚇牠",
+    image: emoji("🐦🏠"),
+  },
+  {
+    avatar: "🏃",
+    name: "凱文",
+    text: "晨跑打卡 day 47，膝蓋有點抗議",
+    image: photo("dawn-running-track"),
+  },
+  {
+    avatar: "🎬",
+    name: "Vivian",
+    text: "重看了一部老電影，眼淚還是停不下來",
+    image: photo("vintage-cinema"),
+  },
+  { avatar: "🍜", name: "阿樺", text: "深夜泡麵宣告今天結束", image: photo("midnight-noodles") },
+  { avatar: "🦊", name: "Tony", text: "看到一個迷因笑了半小時，沒救", image: emoji("🦊😂") },
+  {
+    avatar: "🌈",
+    name: "Joanna",
+    text: "下完雨的彩虹，神的恩典從不遲到",
+    image: photo("rainbow-after-rain"),
+  },
+  {
+    avatar: "🐠",
+    name: "阿德",
+    text: "新買的水族箱開缸成功，魚開始游了",
+    image: photo("aquarium-glow"),
+  },
+  {
+    avatar: "🎨",
+    name: "Stella",
+    text: "今天畫了一張小卡送給朋友，被誇到不要不要",
+    image: photo("watercolor-card"),
+  },
   { avatar: "🐻", name: "Ken", text: "熊熊抱抱大會徵集中（在腦中）" },
-  { avatar: "📖", name: "Ruth", text: "靈修進度：詩篇 23 篇還是讓我哭" },
-  { avatar: "🍦", name: "Amy", text: "冰淇淋融化的速度超過我吃的速度，數學爛" },
-  { avatar: "🦦", name: "阿翔", text: "水獺手牽手睡覺，世界因此可愛", image: "🦦💕" },
-  { avatar: "🎵", name: "Grace", text: "循環播放這首歌一整天，腦中清空" },
+  {
+    avatar: "📖",
+    name: "Ruth",
+    text: "靈修進度：詩篇 23 篇還是讓我哭",
+    image: photo("bible-morning-light"),
+  },
+  {
+    avatar: "🍦",
+    name: "Amy",
+    text: "冰淇淋融化的速度超過我吃的速度，數學爛",
+    image: photo("melted-icecream"),
+  },
+  { avatar: "🦦", name: "阿翔", text: "水獺手牽手睡覺，世界因此可愛", image: emoji("🦦💕") },
+  {
+    avatar: "🎵",
+    name: "Grace",
+    text: "循環播放這首歌一整天，腦中清空",
+    image: photo("vinyl-record-spin"),
+  },
 ];
 
 export const FEED_POSTS = POST_TEMPLATES;

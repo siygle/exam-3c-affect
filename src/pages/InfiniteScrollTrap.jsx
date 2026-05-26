@@ -121,8 +121,8 @@ export default function InfiniteScrollTrap({ onBack }) {
     : 0;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50 p-4 text-slate-900 md:p-8">
-      <div className="mx-auto max-w-6xl space-y-6">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50 p-3 text-slate-900 sm:p-4 md:p-8">
+      <div className="mx-auto max-w-6xl space-y-4 md:space-y-6">
         <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -131,29 +131,42 @@ export default function InfiniteScrollTrap({ onBack }) {
                   <ArrowLeft className="mr-1 h-4 w-4" /> 返回首頁
                 </Button>
               )}
-              <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-sm text-slate-600 shadow-sm">
+              <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs text-slate-600 shadow-sm sm:text-sm">
                 <Smartphone className="h-4 w-4" /> 注意力觀察實驗
               </span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight md:text-5xl">無限滑動陷阱</h1>
-            <p className="mt-2 max-w-2xl text-slate-600">
-              給你一個 3 分鐘的小任務，旁邊放一個自動更新的動態牆。
-              不強迫你看，只觀察你被偷走多少時間。
-            </p>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-5xl">
+              無限滑動陷阱
+            </h1>
+            {phase !== "playing" && (
+              <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
+                給你一個 3 分鐘的小任務，旁邊放一個自動更新的動態牆。
+                不強迫你看，只觀察你被偷走多少時間。
+              </p>
+            )}
           </div>
-          {phase === "playing" && (
-            <div className="rounded-2xl bg-slate-900 px-5 py-3 text-white">
-              <div className="text-xs text-slate-300">剩餘時間</div>
-              <div className="text-2xl font-bold tabular-nums">
+        </header>
+
+        {phase === "playing" && (
+          <div className="sticky top-2 z-30 flex items-center justify-between gap-3 rounded-2xl bg-slate-900 px-4 py-2 text-white shadow-lg md:px-5 md:py-3">
+            <div>
+              <div className="text-[10px] text-slate-300 md:text-xs">剩餘時間</div>
+              <div className="text-xl font-bold tabular-nums md:text-2xl">
                 {formatMmSs(countdown.remaining)}
               </div>
             </div>
-          )}
-        </header>
+            <button
+              onClick={finishEarly}
+              className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium hover:bg-white/20"
+            >
+              我完成了，結算
+            </button>
+          </div>
+        )}
 
         {phase === "setup" && (
           <Card className="rounded-3xl border-0 shadow-sm">
-            <CardContent className="space-y-5 p-6">
+            <CardContent className="space-y-5 p-4 md:p-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm text-slate-600">
                   <span className="flex items-center gap-2 font-semibold text-slate-700">
@@ -207,17 +220,8 @@ export default function InfiniteScrollTrap({ onBack }) {
         {phase === "playing" && TaskComponent && (
           <section className="grid gap-4 lg:grid-cols-[1fr_360px]">
             <Card className="rounded-3xl border-0 shadow-sm">
-              <CardContent className="space-y-2 p-6">
+              <CardContent className="p-4 md:p-6">
                 <TaskComponent onProgress={onTaskProgress} />
-                <div className="flex items-center justify-between border-t pt-4 text-xs text-slate-400">
-                  <span>提早完成可結束。否則 3 分鐘到自動結算。</span>
-                  <button
-                    onClick={finishEarly}
-                    className="rounded-full bg-slate-900 px-4 py-1.5 text-xs font-medium text-white"
-                  >
-                    我完成了，結算
-                  </button>
-                </div>
               </CardContent>
             </Card>
             <FakeFeed onEnter={glance.onEnter} onLeave={glance.onLeave} />
@@ -227,7 +231,7 @@ export default function InfiniteScrollTrap({ onBack }) {
         {phase === "result" && (
           <div className="space-y-4">
             <Card className="rounded-3xl border-0 bg-slate-900 text-white shadow-sm">
-              <CardContent className="space-y-4 p-6">
+              <CardContent className="space-y-4 p-4 md:p-6">
                 <div className="flex items-center gap-2 text-sm text-slate-300">
                   <Eye className="h-4 w-4" /> 注意力流向
                 </div>
@@ -254,7 +258,7 @@ export default function InfiniteScrollTrap({ onBack }) {
             </Card>
 
             <Card className="rounded-3xl border-0 shadow-sm">
-              <CardContent className="space-y-3 p-6">
+              <CardContent className="space-y-3 p-4 md:p-6">
                 <div className="flex items-center gap-2 text-sm text-slate-500">
                   <Trophy className="h-4 w-4" /> 任務結果（{TASK_LABEL[activeTaskId]}）
                 </div>

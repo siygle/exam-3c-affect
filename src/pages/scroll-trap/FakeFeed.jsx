@@ -15,6 +15,31 @@ function pickRandomPost(usedIds) {
   };
 }
 
+function FeedImage({ image, avatar }) {
+  const [errored, setErrored] = useState(false);
+
+  if (!image) return null;
+
+  if (image.kind === "emoji" || errored) {
+    const value = errored ? avatar : image.value;
+    return (
+      <div className="mt-2 flex h-28 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 via-rose-100 to-sky-100 text-4xl">
+        {value}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={`https://picsum.photos/seed/${encodeURIComponent(image.seed)}/320/200`}
+      alt=""
+      loading="lazy"
+      onError={() => setErrored(true)}
+      className="mt-2 h-28 w-full rounded-xl bg-slate-100 object-cover"
+    />
+  );
+}
+
 export default function FakeFeed({ onEnter, onLeave }) {
   const [items, setItems] = useState(() => {
     const seed = [];
@@ -27,6 +52,7 @@ export default function FakeFeed({ onEnter, onLeave }) {
     return seed;
   });
   const usedRef = useRef(new Set(items.map((p) => p.name)));
+  const touchTimeoutRef = useRef(null);
 
   useEffect(() => {
     let timeoutId;
@@ -44,11 +70,32 @@ export default function FakeFeed({ onEnter, onLeave }) {
     return () => clearTimeout(timeoutId);
   }, []);
 
+  // 觸控裝置不會觸發 mouseenter/leave；改用 touchstart 開始計時、
+  // touchend 之後給 1 秒緩衝，期間若再 touch 就接續累計。
+  const handleTouchStart = () => {
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current);
+      touchTimeoutRef.current = null;
+    } else {
+      onEnter();
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+    touchTimeoutRef.current = setTimeout(() => {
+      touchTimeoutRef.current = null;
+      onLeave();
+    }, 1000);
+  };
+
   return (
     <div
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      className="flex h-[640px] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-sm"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="flex h-[420px] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-sm md:h-[560px] lg:h-[640px]"
     >
       <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
         <div className="flex items-center gap-2">
@@ -57,7 +104,7 @@ export default function FakeFeed({ onEnter, onLeave }) {
         </div>
         <span className="text-xs text-slate-400">即時更新中</span>
       </div>
-      <div className="flex-1 space-y-3 overflow-y-auto p-4">
+      <div className="flex-1 space-y-3 overflow-y-auto p-3 md:p-4">
         <AnimatePresence initial={false}>
           {items.map((item) => (
             <motion.div
@@ -79,11 +126,7 @@ export default function FakeFeed({ onEnter, onLeave }) {
                 </div>
               </div>
               <p className="mt-2 text-sm text-slate-700">{item.text}</p>
-              {item.image && (
-                <div className="mt-2 flex h-24 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 via-rose-100 to-sky-100 text-4xl">
-                  {item.image}
-                </div>
-              )}
+              <FeedImage image={item.image} avatar={item.avatar} />
               <div className="mt-2 flex items-center gap-3 text-xs text-slate-400">
                 <span className="flex items-center gap-1">
                   <Heart className="h-3 w-3" /> {item.likes}

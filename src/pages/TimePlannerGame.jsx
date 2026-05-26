@@ -554,9 +554,9 @@ export default function TimePlannerGame({ onBack }) {
   while (timelineBlocks.length < 24) timelineBlocks.push(null);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-4 text-slate-900 md:p-8">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-3 text-slate-900 sm:p-4 md:p-8">
+      <div className="mx-auto max-w-7xl space-y-4 md:space-y-6">
+        <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               {onBack && (
@@ -564,16 +564,20 @@ export default function TimePlannerGame({ onBack }) {
                   <ArrowLeft className="mr-1 h-4 w-4" /> 返回首頁
                 </Button>
               )}
-              <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-sm text-slate-600 shadow-sm">
+              <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs text-slate-600 shadow-sm sm:text-sm">
                 <Clock className="h-4 w-4" /> 互動式時間安排測試
               </span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight md:text-5xl">24 格人生</h1>
-            <p className="mt-2 max-w-2xl text-slate-600">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-5xl">24 格人生</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
               把今天的任務排進 24 小時裡，再抽突發事件，看看你的時間管理人格與信仰生活節奏。
             </p>
           </div>
-          <Button variant="outline" onClick={resetGame} className="rounded-2xl">
+          <Button
+            variant="outline"
+            onClick={resetGame}
+            className="self-start rounded-2xl md:self-auto"
+          >
             <RotateCcw className="mr-2 h-4 w-4" /> 重新開始
           </Button>
         </header>

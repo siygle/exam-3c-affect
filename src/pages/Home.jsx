@@ -39,18 +39,18 @@ const GAMES = [
 
 export default function Home({ onSelectGame }) {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-4 text-slate-900 md:p-8">
-      <div className="mx-auto max-w-6xl space-y-10">
-        <header className="space-y-4 pt-6 md:pt-12">
-          <div className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-sm text-slate-600 shadow-sm">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-3 text-slate-900 sm:p-4 md:p-8">
+      <div className="mx-auto max-w-6xl space-y-8 md:space-y-10">
+        <header className="space-y-4 pt-4 sm:pt-6 md:pt-12">
+          <div className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs text-slate-600 shadow-sm sm:text-sm">
             <Smartphone className="h-4 w-4" /> 3C 與生活節奏小遊戲
           </div>
-          <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl">
             在 3C 的世代，
             <br className="hidden md:block" />
             找回時間與內心的次序
           </h1>
-          <p className="max-w-2xl text-base text-slate-600 md:text-lg">
+          <p className="max-w-2xl text-sm text-slate-600 sm:text-base md:text-lg">
             一系列為信仰青年設計的互動小遊戲，幫助你看見手機、螢幕與時間之間的拉扯，
             重新練習把神、生活與重要的人放在對的位置。
           </p>
@@ -60,7 +60,7 @@ export default function Home({ onSelectGame }) {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500">
             選擇一個小遊戲
           </h2>
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {GAMES.map((game, index) => {
               const Icon = game.icon;
               const isLive = game.status === "live";
@@ -74,14 +74,16 @@ export default function Home({ onSelectGame }) {
                   <Card
                     className={`group h-full overflow-hidden rounded-3xl border-0 shadow-sm transition ${isLive ? "hover:-translate-y-1 hover:shadow-md" : "opacity-70"}`}
                   >
-                    <div className={`bg-gradient-to-br ${game.accent} px-6 pt-6 pb-4`}>
+                    <div
+                      className={`bg-gradient-to-br ${game.accent} px-5 pt-5 pb-3 md:px-6 md:pt-6 md:pb-4`}
+                    >
                       <div
                         className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${game.iconBg}`}
                       >
                         <Icon className="h-6 w-6" />
                       </div>
                     </div>
-                    <CardContent className="space-y-3 p-6">
+                    <CardContent className="space-y-3 p-5 md:p-6">
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
                           {game.tagline}
