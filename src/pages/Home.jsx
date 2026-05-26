@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Clock, Smartphone, ArrowRight, Hourglass } from "lucide-react";
+import { Clock, Smartphone, ArrowRight, Newspaper } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -26,14 +26,14 @@ const GAMES = [
     status: "live",
   },
   {
-    id: "coming-2",
-    title: "Coming soon",
-    tagline: "即將推出",
-    description: "新的 3C 影響小遊戲正在籌備中。",
-    icon: Hourglass,
-    accent: "from-slate-100 to-slate-200",
-    iconBg: "bg-slate-200 text-slate-500",
-    status: "coming",
+    id: "attention-game",
+    title: "哪個訊息會吸引你？",
+    tagline: "媒體素養 · 注意力觀察",
+    description: "5 道訊息選擇題，看看我們的注意力在「平淡、誇張、溫馨」之間最容易被誰拉走。",
+    icon: Newspaper,
+    accent: "from-stone-100 to-rose-100",
+    iconBg: "bg-rose-200/60 text-rose-700",
+    status: "live",
   },
 ];
 
