@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Clock, Smartphone, ArrowRight, Newspaper } from "lucide-react";
+import { Clock, Smartphone, ArrowRight, Newspaper, Brain } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -35,6 +35,17 @@ const GAMES = [
     iconBg: "bg-rose-200/60 text-rose-700",
     status: "live",
   },
+  {
+    id: "llm-journey",
+    title: "從訓練到推論",
+    tagline: "LLM 互動教學",
+    description:
+      "用 6 個互動步驟，從資料、token、訓練、attention 一路到推論，看懂 LLM 怎麼產生答案。",
+    icon: Brain,
+    accent: "from-indigo-100 to-sky-100",
+    iconBg: "bg-indigo-200/60 text-indigo-700",
+    status: "live",
+  },
 ];
 
 export default function Home({ onSelectGame }) {
@@ -60,7 +71,7 @@ export default function Home({ onSelectGame }) {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500">
             選擇一個小遊戲
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
             {GAMES.map((game, index) => {
               const Icon = game.icon;
               const isLive = game.status === "live";
