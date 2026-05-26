@@ -48,7 +48,7 @@ const GAMES = [
   },
 ];
 
-export default function Home({ onSelectGame }) {
+export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-3 text-slate-900 sm:p-4 md:p-8">
       <div className="mx-auto max-w-6xl space-y-8 md:space-y-10">
@@ -113,9 +113,12 @@ export default function Home({ onSelectGame }) {
                       <p className="text-sm text-slate-600">{game.description}</p>
                       <div className="pt-2">
                         {isLive ? (
-                          <Button onClick={() => onSelectGame(game.id)} className="rounded-2xl">
+                          <a
+                            href={`#/${game.id}`}
+                            className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow transition hover:bg-slate-800"
+                          >
                             開始遊玩 <ArrowRight className="ml-1 h-4 w-4" />
-                          </Button>
+                          </a>
                         ) : (
                           <Button disabled variant="outline" className="rounded-2xl">
                             尚未開放

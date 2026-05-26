@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import Home from "./pages/Home.jsx";
 import TimePlannerGame from "./pages/TimePlannerGame.jsx";
 import InfiniteScrollTrap from "./pages/InfiniteScrollTrap.jsx";
 import AttentionGame from "./pages/AttentionGame.jsx";
 import LLMJourney from "./pages/LLMJourney.jsx";
+import { useHashRoute } from "./lib/useHashRoute.js";
+
+const ROUTES = {
+  "time-planner": TimePlannerGame,
+  "scroll-trap": InfiniteScrollTrap,
+  "attention-game": AttentionGame,
+  "llm-journey": LLMJourney,
+};
 
 export default function App() {
-  const [view, setView] = useState("home");
-  const goHome = () => setView("home");
+  const { route, navigate } = useHashRoute();
+  const goHome = () => navigate("");
 
-  if (view === "time-planner") return <TimePlannerGame onBack={goHome} />;
-  if (view === "scroll-trap") return <InfiniteScrollTrap onBack={goHome} />;
-  if (view === "attention-game") return <AttentionGame onBack={goHome} />;
-  if (view === "llm-journey") return <LLMJourney onBack={goHome} />;
+  const Game = ROUTES[route];
+  if (Game) return <Game onBack={goHome} />;
 
-  return <Home onSelectGame={(id) => setView(id)} />;
+  return <Home />;
 }
