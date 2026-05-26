@@ -1,10 +1,40 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { DIFF_PUZZLE } from "./data";
+import { DIFF_EMOJI_POOL } from "./data";
+
+const GRID_SIZE = 25; // 5x5
+const DIFF_COUNT = 5;
+
+function buildPuzzle() {
+  const gridA = Array.from(
+    { length: GRID_SIZE },
+    () => DIFF_EMOJI_POOL[Math.floor(Math.random() * DIFF_EMOJI_POOL.length)],
+  );
+
+  // 從 0..24 抽出 DIFF_COUNT 個不重複位置
+  const positions = Array.from({ length: GRID_SIZE }, (_, i) => i);
+  for (let i = positions.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [positions[i], positions[j]] = [positions[j], positions[i]];
+  }
+  const diffPositions = positions.slice(0, DIFF_COUNT);
+
+  const gridB = [...gridA];
+  diffPositions.forEach((idx) => {
+    let next = DIFF_EMOJI_POOL[Math.floor(Math.random() * DIFF_EMOJI_POOL.length)];
+    while (next === gridA[idx]) {
+      next = DIFF_EMOJI_POOL[Math.floor(Math.random() * DIFF_EMOJI_POOL.length)];
+    }
+    gridB[idx] = next;
+  });
+
+  return { gridA, gridB, diffIndices: diffPositions };
+}
 
 export default function DiffTask({ onProgress }) {
+  const puzzle = useMemo(() => buildPuzzle(), []);
   const [marked, setMarked] = useState(() => new Set());
-  const diffSet = useMemo(() => new Set(DIFF_PUZZLE.diffIndices), []);
-  const total = DIFF_PUZZLE.diffIndices.length;
+  const diffSet = useMemo(() => new Set(puzzle.diffIndices), [puzzle]);
+  const total = puzzle.diffIndices.length;
 
   const found = useMemo(() => {
     let n = 0;
@@ -63,8 +93,8 @@ export default function DiffTask({ onProgress }) {
       </p>
       <div className="grid gap-6 sm:grid-cols-2">
         {[
-          { name: "A", grid: DIFF_PUZZLE.gridA },
-          { name: "B", grid: DIFF_PUZZLE.gridB },
+          { name: "A", grid: puzzle.gridA },
+          { name: "B", grid: puzzle.gridB },
         ].map(({ name, grid }) => (
           <div key={name} className="space-y-2 rounded-2xl bg-slate-50 p-3 shadow-sm">
             <div className="text-xs font-semibold text-slate-400">圖 {name}</div>

@@ -1,12 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { LOGIC_QUESTIONS } from "./data";
+import React, { useEffect, useMemo, useState } from "react";
+import { LOGIC_PICK, LOGIC_POOL } from "./data";
+
+function pickQuestions() {
+  const indices = LOGIC_POOL.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return indices.slice(0, LOGIC_PICK).map((i) => LOGIC_POOL[i]);
+}
 
 export default function LogicTask({ onProgress }) {
+  const questions = useMemo(pickQuestions, []);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState([]);
 
-  const total = LOGIC_QUESTIONS.length;
-  const correctCount = answers.filter((a, i) => a === LOGIC_QUESTIONS[i].answerIndex).length;
+  const total = questions.length;
+  const correctCount = answers.filter((a, i) => a === questions[i].answerIndex).length;
   const finished = answers.length === total;
 
   useEffect(() => {
@@ -42,7 +52,7 @@ export default function LogicTask({ onProgress }) {
           </span>
         </div>
         <div className="space-y-3">
-          {LOGIC_QUESTIONS.map((q, i) => {
+          {questions.map((q, i) => {
             const ok = answers[i] === q.answerIndex;
             return (
               <div key={i} className="rounded-2xl bg-white p-4 text-sm shadow-sm">
@@ -71,7 +81,7 @@ export default function LogicTask({ onProgress }) {
     );
   }
 
-  const q = LOGIC_QUESTIONS[current];
+  const q = questions[current];
   const myAnswer = answers[current];
 
   return (

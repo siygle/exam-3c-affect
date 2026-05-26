@@ -29,9 +29,12 @@ function FeedImage({ image, avatar }) {
     );
   }
 
+  // image.tag 是逗號分隔的關鍵字，例如 "cat,kitten"
+  // Loremflickr 會根據 tag 回傳對應主題的隨機照片
+  const url = `https://loremflickr.com/320/200/${encodeURIComponent(image.tag)}`;
   return (
     <img
-      src={`https://picsum.photos/seed/${encodeURIComponent(image.seed)}/320/200`}
+      src={url}
       alt=""
       loading="lazy"
       onError={() => setErrored(true)}

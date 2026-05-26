@@ -1,18 +1,23 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { TYPO_ARTICLE } from "./data";
+import { TYPO_ARTICLE_POOL } from "./data";
 
 export default function TypoTask({ onProgress }) {
+  // 每次掛載隨機抽一篇文章
+  const article = useMemo(
+    () => TYPO_ARTICLE_POOL[Math.floor(Math.random() * TYPO_ARTICLE_POOL.length)],
+    [],
+  );
   const [marked, setMarked] = useState(() => new Set());
 
-  const totalTypos = useMemo(() => TYPO_ARTICLE.filter((s) => s.typo).length, []);
+  const totalTypos = useMemo(() => article.filter((s) => s.typo).length, [article]);
 
   const found = useMemo(() => {
     let n = 0;
     marked.forEach((idx) => {
-      if (TYPO_ARTICLE[idx].typo) n += 1;
+      if (article[idx]?.typo) n += 1;
     });
     return n;
-  }, [marked]);
+  }, [marked, article]);
 
   const wrongMarks = marked.size - found;
 
@@ -46,7 +51,7 @@ export default function TypoTask({ onProgress }) {
         文章內藏有 {totalTypos} 個錯字，點擊字即可標記。再點一次取消。
       </p>
       <div className="rounded-2xl bg-white p-6 text-lg leading-loose text-slate-800 shadow-sm">
-        {TYPO_ARTICLE.map((seg, idx) => {
+        {article.map((seg, idx) => {
           const isMarked = marked.has(idx);
           return (
             <span
