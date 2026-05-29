@@ -206,7 +206,7 @@ export default function InfiniteScrollTrap({ onBack }) {
                 <ul className="mt-2 list-disc space-y-1 pl-5">
                   <li>3 分鐘倒數內完成任務。</li>
                   <li>右側動態牆會自動更新，可看可不看，由你決定。</li>
-                  <li>結束後會揭曉你的滑鼠在動態牆上停留了幾次、多久。</li>
+                  <li>結束後會揭曉你主動轉去看動態牆幾次、停留多久。</li>
                   <li>請誠實玩，這不是測你會不會考試，是觀察注意力流向。</li>
                 </ul>
               </div>
@@ -224,7 +224,11 @@ export default function InfiniteScrollTrap({ onBack }) {
                 <TaskComponent onProgress={onTaskProgress} />
               </CardContent>
             </Card>
-            <FakeFeed onEnter={glance.onEnter} onLeave={glance.onLeave} />
+            <FakeFeed
+              onPointerEnter={glance.onPointerEnter}
+              onPointerLeave={glance.onPointerLeave}
+              onActivity={glance.onActivity}
+            />
           </section>
         )}
 
@@ -236,7 +240,7 @@ export default function InfiniteScrollTrap({ onBack }) {
                   <Eye className="h-4 w-4" /> 注意力流向
                 </div>
                 <div className="grid gap-3 md:grid-cols-3">
-                  <Stat label="瞄看次數" value={glance.stats.count} unit="次" />
+                  <Stat label="主動去看次數" value={glance.stats.count} unit="次" />
                   <Stat label="平均每次" value={avgGlance} unit="秒" />
                   <Stat label="總計停留" value={glanceSeconds} unit={`秒 / ${elapsedSeconds}秒`} />
                 </div>
@@ -245,7 +249,7 @@ export default function InfiniteScrollTrap({ onBack }) {
                   <span className="mx-1 text-xl font-bold text-amber-300">
                     {glancePercent.toFixed(1)}%
                   </span>
-                  的時間滑鼠停留在動態牆上。
+                  的時間主動轉去看動態牆。
                 </div>
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
@@ -300,7 +304,7 @@ export default function InfiniteScrollTrap({ onBack }) {
         toasts={notifications.toasts}
         onDismiss={notifications.dismiss}
         onClick={(id) => {
-          glance.registerExternalGlance(500);
+          glance.onActivity();
           notifications.handleToastClick(id);
         }}
       />
