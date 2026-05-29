@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bell } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bell, Eye, ChevronDown } from "lucide-react";
 import { FEED_POSTS } from "./data";
 
 function pickRandomPost(usedIds) {
@@ -15,31 +15,109 @@ function pickRandomPost(usedIds) {
   };
 }
 
-function FeedImage({ image, avatar }) {
+function FeedImage({ image, avatar, expanded }) {
   const [errored, setErrored] = useState(false);
 
   if (!image) return null;
 
+  let inner;
   if (image.kind === "emoji" || errored) {
     const value = errored ? avatar : image.value;
-    return (
-      <div className="mt-2 flex h-28 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 via-rose-100 to-sky-100 text-4xl">
+    inner = (
+      <div className="flex h-28 items-center justify-center bg-gradient-to-br from-amber-100 via-rose-100 to-sky-100 text-4xl">
         {value}
       </div>
     );
+  } else {
+    // image.tag 是逗號分隔的關鍵字，例如 "cat,kitten"
+    // Loremflickr 會根據 tag 回傳對應主題的隨機照片
+    const url = `https://loremflickr.com/320/200/${encodeURIComponent(image.tag)}`;
+    inner = (
+      <img
+        src={url}
+        alt=""
+        loading="lazy"
+        onError={() => setErrored(true)}
+        className="h-28 w-full bg-slate-100 object-cover"
+      />
+    );
   }
 
-  // image.tag 是逗號分隔的關鍵字，例如 "cat,kitten"
-  // Loremflickr 會根據 tag 回傳對應主題的隨機照片
-  const url = `https://loremflickr.com/320/200/${encodeURIComponent(image.tag)}`;
   return (
-    <img
-      src={url}
-      alt=""
-      loading="lazy"
-      onError={() => setErrored(true)}
-      className="mt-2 h-28 w-full rounded-xl bg-slate-100 object-cover"
-    />
+    <div className="relative mt-2 overflow-hidden rounded-xl">
+      <div className={expanded ? "" : "scale-110 blur-md"}>{inner}</div>
+      {!expanded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/30">
+          <span className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-slate-700 shadow">
+            <Eye className="h-3.5 w-3.5" /> 點擊看完整圖片
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FeedPost({ item, onActivity }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const expand = () => {
+    if (expanded) return;
+    setExpanded(true);
+    onActivity?.();
+  };
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: -16, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: 0.3 }}
+      onClick={() => onActivity?.()}
+      className="rounded-2xl bg-white p-3 shadow-sm"
+    >
+      <div className="flex items-center gap-2">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-200 to-rose-200 text-lg">
+          {item.avatar}
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-semibold text-slate-700">{item.name}</div>
+          <div className="text-[10px] text-slate-400">剛剛</div>
+        </div>
+      </div>
+
+      <p className={`mt-2 text-sm text-slate-700 ${expanded ? "" : "line-clamp-1"}`}>{item.text}</p>
+
+      {expanded ? (
+        <FeedImage image={item.image} avatar={item.avatar} expanded />
+      ) : (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            expand();
+          }}
+          className="mt-1 w-full text-left"
+        >
+          {item.image && <FeedImage image={item.image} avatar={item.avatar} expanded={false} />}
+          <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-500">
+            查看更多 <ChevronDown className="h-3 w-3" />
+          </span>
+        </button>
+      )}
+
+      <div className="mt-2 flex items-center gap-3 text-xs text-slate-400">
+        <span className="flex items-center gap-1">
+          <Heart className="h-3 w-3" /> {item.likes}
+        </span>
+        <span className="flex items-center gap-1">
+          <MessageCircle className="h-3 w-3" /> {item.comments}
+        </span>
+        <span className="flex items-center gap-1">
+          <Share2 className="h-3 w-3" />
+        </span>
+      </div>
+    </motion.div>
   );
 }
 
@@ -125,39 +203,7 @@ export default function FakeFeed({ onPointerEnter, onPointerLeave, onActivity })
         >
           <AnimatePresence initial={false}>
             {items.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, y: -16, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => onActivity?.()}
-                className="rounded-2xl bg-white p-3 shadow-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-200 to-rose-200 text-lg">
-                    {item.avatar}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-semibold text-slate-700">{item.name}</div>
-                    <div className="text-[10px] text-slate-400">剛剛</div>
-                  </div>
-                </div>
-                <p className="mt-2 text-sm text-slate-700">{item.text}</p>
-                <FeedImage image={item.image} avatar={item.avatar} />
-                <div className="mt-2 flex items-center gap-3 text-xs text-slate-400">
-                  <span className="flex items-center gap-1">
-                    <Heart className="h-3 w-3" /> {item.likes}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MessageCircle className="h-3 w-3" /> {item.comments}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Share2 className="h-3 w-3" />
-                  </span>
-                </div>
-              </motion.div>
+              <FeedPost key={item.id} item={item} onActivity={onActivity} />
             ))}
           </AnimatePresence>
         </div>
