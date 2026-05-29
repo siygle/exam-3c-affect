@@ -254,7 +254,7 @@ export default function InfiniteScrollTrap({ onBack }) {
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl bg-amber-200/20 p-4 text-sm text-amber-100"
+                  className="rounded-2xl border border-amber-300/30 bg-amber-300/15 p-4 text-sm leading-relaxed text-amber-50"
                 >
                   {buildReflection(glancePercent)}
                 </motion.div>
@@ -314,8 +314,8 @@ export default function InfiniteScrollTrap({ onBack }) {
 
 function Stat({ label, value, unit, light }) {
   return (
-    <div className={`rounded-2xl p-4 ${light ? "bg-slate-50" : "bg-white/5"}`}>
-      <div className={`text-xs ${light ? "text-slate-500" : "text-slate-300"}`}>{label}</div>
+    <div className={`rounded-2xl p-4 ${light ? "bg-slate-50" : "bg-white/10"}`}>
+      <div className={`text-xs ${light ? "text-slate-500" : "text-slate-200"}`}>{label}</div>
       <div
         className={`mt-1 text-2xl font-bold tabular-nums ${light ? "text-slate-900" : "text-white"}`}
       >
