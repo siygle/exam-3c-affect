@@ -4,6 +4,7 @@ import TimePlannerGame from "./pages/TimePlannerGame.jsx";
 import InfiniteScrollTrap from "./pages/InfiniteScrollTrap.jsx";
 import AttentionGame from "./pages/AttentionGame.jsx";
 import LLMJourney from "./pages/LLMJourney.jsx";
+import TraceMe from "./pages/TraceMe.jsx";
 import { useHashRoute } from "./lib/useHashRoute.js";
 
 const ROUTES = {
@@ -11,6 +12,7 @@ const ROUTES = {
   "scroll-trap": InfiniteScrollTrap,
   "attention-game": AttentionGame,
   "llm-journey": LLMJourney,
+  "trace-me": TraceMe,
 };
 
 export default function App() {

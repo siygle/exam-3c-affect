@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Clock, Smartphone, ArrowRight, Newspaper, Brain } from "lucide-react";
+import { Clock, Smartphone, ArrowRight, Newspaper, Brain, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -46,6 +46,17 @@ const GAMES = [
     iconBg: "bg-indigo-200/60 text-indigo-700",
     status: "live",
   },
+  {
+    id: "trace-me",
+    title: "數位足跡調查室",
+    tagline: "個資外洩 · 數位公民",
+    description:
+      "調查一位虛構角色的公開貼文，看看零碎的照片、暱稱與打卡如何被串聯出生活輪廓與風險。",
+    icon: Search,
+    accent: "from-cyan-100 to-blue-100",
+    iconBg: "bg-cyan-200/60 text-cyan-700",
+    status: "live",
+  },
 ];
 
 export default function Home() {
@@ -71,7 +82,7 @@ export default function Home() {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500">
             選擇一個小遊戲
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {GAMES.map((game, index) => {
               const Icon = game.icon;
               const isLive = game.status === "live";
