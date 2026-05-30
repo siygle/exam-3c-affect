@@ -16,6 +16,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import previewImg from "@/assets/trace-me/preview.webp";
+import courtImg from "@/assets/trace-me/photo-court.webp";
+import drinkImg from "@/assets/trace-me/photo-drink.webp";
+import streetImg from "@/assets/trace-me/short-street.webp";
+import posterImg from "@/assets/trace-me/event-poster.webp";
+import birthdayImg from "@/assets/trace-me/friend-birthday.webp";
+
 // 每條線索的標題、說明與暴露風險值
 const CLUES = {
   sport: { title: "運動興趣", detail: "照片文字透露經常練球", risk: 4 },
@@ -28,7 +35,7 @@ const CLUES = {
   liveLocation: { title: "即時位置", detail: "限動顯示當下正在某車站", risk: 16 },
 };
 
-// scene: 'photo' 用 Loremflickr tag 取照片；'poster'/'forum' 用樣式區塊
+// image.src 用內建場景照片（線索畫在圖中）；scene 'forum' 用樣式區塊
 const PLATFORMS = [
   {
     id: "photo",
@@ -42,7 +49,7 @@ const PLATFORMS = [
         time: "週一 18:42",
         text: "今天練球累爆了！但週末比賽一定要贏 🏀",
         textClue: { id: "sport", label: "練球內容" },
-        image: { tag: "basketball,court" },
+        image: { src: courtImg },
         imageNote: "照片中可注意：制服字樣、球場背景、放學後時段感。",
         note: "公開貼文｜所有人皆可查看",
         noteClue: { id: "schoolBadge", label: "制服上的校名" },
@@ -53,7 +60,7 @@ const PLATFORMS = [
         time: "週三 17:18",
         text: "練完球的固定儀式！",
         textClue: { id: "routine", label: "「固定」習慣" },
-        image: { tag: "bubble-tea,drink" },
+        image: { src: drinkImg },
         note: "門市與車站資訊清楚可見",
         noteClue: { id: "shop", label: "分店名稱與地點" },
       },
@@ -70,7 +77,7 @@ const PLATFORMS = [
         user: "@lightball_520",
         time: "今天 18:04",
         text: "放學訓練結束，喝杯奶茶回家～～ #日常碎片 #放學後的生活 #籃球少年",
-        image: { tag: "street,night" },
+        image: { src: streetImg },
         note: "短影音畫面同時露出時間、地點與互動資訊",
         noteClue: { id: "liveLocation", label: "即時地點標籤" },
       },
@@ -105,8 +112,8 @@ const PLATFORMS = [
         user: "校際運動公告",
         time: "5 月 12 日",
         text: "新河區國中籃球交流賽得獎名單",
-        scene: "poster",
-        sceneLines: ["🏆 新河區國中籃球交流賽", "得獎名單（含姓名 / 學校）"],
+        image: { src: posterImg },
+        imageNote: "公告海報上可見參賽者姓名與所屬學校。",
         note: "提醒：有些公開足跡來自活動或他人，而非本人主動發布",
         noteClue: { id: "team", label: "姓名與學校公告" },
       },
@@ -123,7 +130,7 @@ const PLATFORMS = [
         user: "@friend_mimi",
         time: "5 月 20 日",
         text: "小光生日快樂！放學聚餐成功 🎉",
-        image: { tag: "birthday,cake" },
+        image: { src: birthdayImg },
         note: "朋友標記與聚會照片也會暴露個人資訊",
         noteClue: { id: "birthday", label: "生日與朋友標記" },
       },
@@ -217,21 +224,12 @@ function computeUnlocked(clues) {
 }
 
 function SceneImage({ image }) {
-  const [errored, setErrored] = useState(false);
-  if (errored) {
-    return (
-      <div className="mt-3 flex h-40 items-center justify-center rounded-xl border border-cyan-900/40 bg-gradient-to-br from-cyan-900/40 to-slate-800 text-3xl">
-        🖼️
-      </div>
-    );
-  }
   return (
     <img
-      src={`https://loremflickr.com/360/220/${encodeURIComponent(image.tag)}`}
+      src={image.src}
       alt=""
       loading="lazy"
-      onError={() => setErrored(true)}
-      className="mt-3 h-40 w-full rounded-xl border border-cyan-900/40 bg-slate-800 object-cover"
+      className="mt-3 max-h-72 w-full rounded-xl border border-cyan-900/40 bg-slate-800 object-cover"
     />
   );
 }
@@ -528,10 +526,10 @@ export default function TraceMe({ onBack }) {
                   </div>
                 </div>
                 <img
-                  src="https://loremflickr.com/360/220/basketball,court"
+                  src={previewImg}
                   alt=""
                   loading="lazy"
-                  className="mt-4 h-40 w-full rounded-xl border border-slate-700 bg-slate-800 object-cover"
+                  className="mt-4 max-h-56 w-full rounded-xl border border-slate-700 bg-slate-800 object-cover"
                 />
                 <div className="mt-3 h-2 w-3/4 rounded bg-slate-700" />
                 <div className="mt-2 h-2 w-1/2 rounded bg-slate-700" />
